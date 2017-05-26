@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package messages;
+
+message Base
+{
+    uint32 seq_num = 1;
+}
+
+message PingReq
+{
+    Base base = 1;
+}
+
+message PingRsp
+{
+    Base base = 1;
+    uint32 req_seq_num = 2;
+}
+
+message Text
+{
+    Base base = 1;
+    string msg_txt = 2;
+}
