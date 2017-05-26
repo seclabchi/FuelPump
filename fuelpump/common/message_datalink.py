@@ -39,7 +39,9 @@ class MessageDatalink(object):
         msg_enc.append(BYTE_DLE)
         msg_enc.append(BYTE_ETX)
         
+        return msg_enc
+        
         
     @classmethod
     def decode(cls, msg):
-            
+        pass
