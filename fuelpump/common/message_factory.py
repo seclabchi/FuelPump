@@ -15,28 +15,27 @@ class MessageFactory(object):
     seq_num = struct.unpack("I", os.urandom(4))[0]
     
     def __init__(self, params):
-        '''
-        Constructor
-        '''
+        raise NotImplementedError
+    
     @classmethod    
-    def get_ping_req(self):
+    def get_ping_req(cls):
         msg = MessagePingReq()
-        msg.assemble({'seq_num': MessageFactory.seq_num})
-        MessageFactory.seq_num += 1
+        msg.assemble({'seq_num': cls.seq_num})
+        cls.seq_num += 1
         return msg
     
     @classmethod   
-    def get_ping_rsp(self, req_seq_num):
+    def get_ping_rsp(cls, req_seq_num):
         msg = MessagePingRsp()
-        msg.assemble({'seq_num': MessageFactory.seq_num, 'req_seq_num': req_seq_num})
-        MessageFactory.seq_num += 1
+        msg.assemble({'seq_num': cls.seq_num, 'req_seq_num': req_seq_num})
+        cls.seq_num += 1
         return msg
     
     @classmethod   
-    def get_text(self, msg_txt):
+    def get_text(cls, msg_txt):
         msg = MessageText()
-        msg.assemble({'seq_num': MessageFactory.seq_num, 'msg_txt': msg_txt})
-        MessageFactory.seq_num += 1
+        msg.assemble({'seq_num': cls.seq_num, 'msg_txt': msg_txt})
+        cls.seq_num += 1
         return msg
         
     
