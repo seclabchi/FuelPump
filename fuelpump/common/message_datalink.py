@@ -16,11 +16,13 @@ class MessageDatalink(object):
     classdocs
     '''
     
-    
-    def __init__(self, message_type):
+    def __init__(self):
         '''
         Constructor
         '''
+        self.rx_buf = bytearray()
+        self.msg_in_progress = False
+        self.dle_pending = False
     
     @classmethod
     def encode(cls, msg):
@@ -41,7 +43,38 @@ class MessageDatalink(object):
         
         return msg_enc
         
+    def decode(self, bytes, callback):
+        '''
+        bytes are data being read off the wire with no processing.
         
-    @classmethod
-    def decode(cls, msg):
-        pass
+        callback gets called with a valid bytearray object once a successful decode happens.
+        The bytes returned are stripped of the datalink framing and will be suitable for processing
+        by the MessageBase class.
+        
+        This is an instance method so multiple datalink objects can be at work at the same time.
+        '''
+        for byte in bytes:
+            if False == self.msg_in_progress:
+                if BYTE_STX == byte:
+                    self.msg_in_progress = True
+            else:
+                #msg in progress
+                if BYTE_DLE == byte:
+                    if True == self.dle_pending:
+                        self.rx_buf.append(byte)
+                    else:
+                        self.dle_pending = True
+                    
+                elif BYTE_ETX == byte:
+                    if True == self.dle_pending:
+                        #end of message
+                        callback(self.rx_buf)
+                    else:
+                        self.rx_buf.append(byte)
+                        
+                else:
+                    self.rx_buf.append(byte)
+                    
+                    
+                    
+            
