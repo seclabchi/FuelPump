@@ -20,6 +20,7 @@ class MessageFactory(object):
     @classmethod
     def get_seq_num(cls):
         ret_seq_num = cls.seq_num
+        cls.seq_num += 1
         return ret_seq_num
     
     @classmethod    
