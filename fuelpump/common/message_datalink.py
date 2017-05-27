@@ -57,11 +57,14 @@ class MessageDatalink(object):
             if False == self.msg_in_progress:
                 if BYTE_STX == byte:
                     self.msg_in_progress = True
+                else:
+                    print "Received character " + hex(byte) + " not in msg frame."
             else:
                 #msg in progress
                 if BYTE_DLE == byte:
                     if True == self.dle_pending:
                         self.rx_buf.append(byte)
+                        self.dle_pending = False
                     else:
                         self.dle_pending = True
                     
@@ -73,8 +76,5 @@ class MessageDatalink(object):
                         self.rx_buf.append(byte)
                         
                 else:
-                    self.rx_buf.append(byte)
-                    
-                    
-                    
+                    self.rx_buf.append(byte)                    
             

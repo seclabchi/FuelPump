@@ -30,7 +30,7 @@ class MessageDatalinkTests(unittest.TestCase):
         msg = MessageFactory.get_ping_rsp(23)
         self.print_enc(msg)
         
-        msg = MessageFactory.get_text("Hello from the \x10 MessageDatalinkTests test_encode test!!!\x10\x10")
+        msg = MessageFactory.get_text("Hello from the \x10 MessageDatalinkTests test_encode \x10\x10 test!!!\x10\x10")
         self.print_enc(msg)
         
     def test_local_decode_ping_req(self):
@@ -43,9 +43,31 @@ class MessageDatalinkTests(unittest.TestCase):
         datalink.decode(enc_msg, self.decode_callback)
         
     def test_local_decode_text(self):
-        test_msg_source = MessageFactory.get_text("Hello \x10 \x10 \x02 \x03 from the purposefully \x03 \x02 \x10 weirdly-crafted text message datalink test.")
+        test_msg_source = MessageFactory.get_text("Hello \x10 \x10 \x02 \x03 from the purposefully \x03 \x02 \x10\x10\x10 weirdly-crafted text message datalink test.")
         self.message_reference = test_msg_source.get_bytes()
         enc_msg = MessageDatalink.encode(test_msg_source)
+        
+        datalink = MessageDatalink()
+        datalink.decode(enc_msg, self.decode_callback)
+    
+    def test_local_decode_text_in_parts(self):
+        test_msg_source = MessageFactory.get_text("Hello \x10 \x10 \x02 \x03 from the purposefully \x03 \x02 \x10\x10\x10 weirdly-crafted text message datalink test.")
+        self.message_reference = test_msg_source.get_bytes()
+        enc_msg = MessageDatalink.encode(test_msg_source)
+        
+        datalink = MessageDatalink()
+        datalink.decode(enc_msg[0:10], self.decode_callback)
+        datalink.decode(enc_msg[10:13], self.decode_callback)
+        datalink.decode(enc_msg[13:20], self.decode_callback)
+        datalink.decode(enc_msg[20:], self.decode_callback)
+        
+    def test_local_decode_with_out_of_band(self):
+        test_msg_source = MessageFactory.get_text("Hello \x10 \x10 \x02 \x03 from the purposefully \x03 \x02 \x10\x10\x10 weirdly-crafted text message datalink test.")
+        self.message_reference = test_msg_source.get_bytes()
+        enc_msg = MessageDatalink.encode(test_msg_source)
+        
+        enc_msg.insert(0, 0x42)
+        enc_msg.insert(0, 0x23)
         
         datalink = MessageDatalink()
         datalink.decode(enc_msg, self.decode_callback)
