@@ -23,3 +23,15 @@ message Text
     Base base = 1;
     string msg_txt = 2;
 }
+
+message Goodbye
+{
+    Base base = 1;
+    enum Reason 
+    {
+        UNKNOWN = 0;
+        SERVER_SHUTDOWN = 1;
+    }
+    Reason reason = 2;
+    string reason_str = 3;
+}

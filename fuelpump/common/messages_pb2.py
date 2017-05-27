@@ -19,10 +19,32 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='messages.proto',
   package='messages',
   syntax='proto3',
-  serialized_pb=_b('\n\x0emessages.proto\x12\x08messages\"\x17\n\x04\x42\x61se\x12\x0f\n\x07seq_num\x18\x01 \x01(\r\"\'\n\x07PingReq\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\"<\n\x07PingRsp\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12\x13\n\x0breq_seq_num\x18\x02 \x01(\r\"5\n\x04Text\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12\x0f\n\x07msg_txt\x18\x02 \x01(\tb\x06proto3')
+  serialized_pb=_b('\n\x0emessages.proto\x12\x08messages\"\x17\n\x04\x42\x61se\x12\x0f\n\x07seq_num\x18\x01 \x01(\r\"\'\n\x07PingReq\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\"<\n\x07PingRsp\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12\x13\n\x0breq_seq_num\x18\x02 \x01(\r\"5\n\x04Text\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12\x0f\n\x07msg_txt\x18\x02 \x01(\t\"\x91\x01\n\x07Goodbye\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12(\n\x06reason\x18\x02 \x01(\x0e\x32\x18.messages.Goodbye.Reason\x12\x12\n\nreason_str\x18\x03 \x01(\t\"*\n\x06Reason\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x13\n\x0fSERVER_SHUTDOWN\x10\x01\x62\x06proto3')
 )
 
 
+
+_GOODBYE_REASON = _descriptor.EnumDescriptor(
+  name='Reason',
+  full_name='messages.Goodbye.Reason',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='UNKNOWN', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='SERVER_SHUTDOWN', index=1, number=1,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=315,
+  serialized_end=357,
+)
+_sym_db.RegisterEnumDescriptor(_GOODBYE_REASON)
 
 
 _BASE = _descriptor.Descriptor(
@@ -162,13 +184,63 @@ _TEXT = _descriptor.Descriptor(
   serialized_end=209,
 )
 
+
+_GOODBYE = _descriptor.Descriptor(
+  name='Goodbye',
+  full_name='messages.Goodbye',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='base', full_name='messages.Goodbye.base', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='reason', full_name='messages.Goodbye.reason', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='reason_str', full_name='messages.Goodbye.reason_str', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _GOODBYE_REASON,
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=212,
+  serialized_end=357,
+)
+
 _PINGREQ.fields_by_name['base'].message_type = _BASE
 _PINGRSP.fields_by_name['base'].message_type = _BASE
 _TEXT.fields_by_name['base'].message_type = _BASE
+_GOODBYE.fields_by_name['base'].message_type = _BASE
+_GOODBYE.fields_by_name['reason'].enum_type = _GOODBYE_REASON
+_GOODBYE_REASON.containing_type = _GOODBYE
 DESCRIPTOR.message_types_by_name['Base'] = _BASE
 DESCRIPTOR.message_types_by_name['PingReq'] = _PINGREQ
 DESCRIPTOR.message_types_by_name['PingRsp'] = _PINGRSP
 DESCRIPTOR.message_types_by_name['Text'] = _TEXT
+DESCRIPTOR.message_types_by_name['Goodbye'] = _GOODBYE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Base = _reflection.GeneratedProtocolMessageType('Base', (_message.Message,), dict(
@@ -198,6 +270,13 @@ Text = _reflection.GeneratedProtocolMessageType('Text', (_message.Message,), dic
   # @@protoc_insertion_point(class_scope:messages.Text)
   ))
 _sym_db.RegisterMessage(Text)
+
+Goodbye = _reflection.GeneratedProtocolMessageType('Goodbye', (_message.Message,), dict(
+  DESCRIPTOR = _GOODBYE,
+  __module__ = 'messages_pb2'
+  # @@protoc_insertion_point(class_scope:messages.Goodbye)
+  ))
+_sym_db.RegisterMessage(Goodbye)
 
 
 # @@protoc_insertion_point(module_scope)

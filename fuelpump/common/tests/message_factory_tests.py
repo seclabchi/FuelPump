@@ -6,6 +6,7 @@ Created on May 23, 2017
 import unittest
 from fuelpump.common.message import *
 from fuelpump.common.message_factory import *
+from fuelpump.common.messages_pb2 import *
 
 class MessageFactoryTests(unittest.TestCase):
 
@@ -29,6 +30,18 @@ class MessageFactoryTests(unittest.TestCase):
         self.assertEqual(type(msg).__name__, 'MessageText')
         self.assertEqual(msg.get_msg_txt(), text_input_msg)
         print str(msg.proto)
+        
+    def testGetGoodbye(self):
+        reason = Goodbye.SERVER_SHUTDOWN
+        reason_str = "Unit test server is shutting down."
+        
+        msg = MessageFactory.get_goodbye(reason, reason_str)
+        
+        self.assertEqual(type(msg).__name__, 'MessageGoodbye')
+        self.assertEqual(msg.get_reason(), Goodbye.SERVER_SHUTDOWN)
+        self.assertEqual(msg.get_reason_str(), reason_str)
+        
+        
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

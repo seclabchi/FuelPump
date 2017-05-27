@@ -5,6 +5,8 @@ Created on May 20, 2017
 '''
 import unittest
 from fuelpump.common.message import *
+from fuelpump.common.messages_pb2 import *
+
 import binascii
 
 class TestVisitor(object):
@@ -99,6 +101,26 @@ class MessageTests(unittest.TestCase):
         
         self.assertEqual(msg_str, msg_str_check)
         self.assertEqual(msg_seq_num, msg_seq_num_check)
+        
+    def testGoodbyeRoundTrip(self):
+        msg = MessageGoodbye()
+        reason_str = "Unit test shutdown"
+        msg_seq_num = 23
+        msg.assemble({'seq_num':msg_seq_num, 'reason':Goodbye.SERVER_SHUTDOWN, 'reason_str':reason_str})
+        msg_bytes = msg.get_bytes()
+        print binascii.hexlify(msg_bytes)
+        
+        msg2 = MessageGoodbye()
+        msg2.create_from_bytes(msg_bytes)
+        
+        msg_reason_check = msg2.get_reason()
+        msg_reason_str_check = msg2.get_reason_str()
+        
+        self.assertEqual(msg.get_reason(), msg_reason_check)
+        self.assertEqual(msg.get_reason_str(), msg_reason_str_check)
+        
+        print "Goodbye round trip with reason_str " + msg2.get_reason_str() + " and reason code " + repr(msg2.get_reason())
+        print str(msg2.proto)
     
 
 if __name__ == "__main__":

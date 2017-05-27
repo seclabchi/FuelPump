@@ -12,6 +12,7 @@ class MessageType:
     PING_REQ = 1
     PING_RSP = 2
     TEXT = 3
+    GOODBYE = 4
     
     @staticmethod
     def str_from_type(msg_type):
@@ -20,6 +21,7 @@ class MessageType:
             MessageType.PING_REQ: "PING_REQ",
             MessageType.PING_RSP: "PING_RSP",
             MessageType.TEXT: "TEXT",
+            MessageType.GOODBYE: "GOODBYE"
         }.get(msg_type, "NONE")
         
         return str_val
@@ -61,6 +63,8 @@ class MessageBase(object):
             self.proto = PingRsp()
         elif this_type is MessageText:
             self.proto = Text()
+        elif this_type is MessageGoodbye:
+            self.proto = Goodbye()
         else:
             raise Exception("Unknown type for factory.")
         
@@ -118,3 +122,21 @@ class MessageText(MessageBase):
         
     def get_msg_txt(self):
         return self.proto.msg_txt
+
+class MessageGoodbye(MessageBase):
+    '''
+    classdocs
+    '''
+    msg_type = MessageType.GOODBYE
+    
+    def assemble(self, params):
+        self.proto = Goodbye()
+        self.proto.reason = params.get('reason')
+        self.proto.reason_str = params.get('reason_str')
+        super(MessageGoodbye, self).assemble(params)
+        
+    def get_reason(self):
+        return self.proto.reason
+    
+    def get_reason_str(self):
+        return self.proto.reason_str
