@@ -13,6 +13,7 @@ class MessageType:
     PING_RSP = 2
     TEXT = 3
     GOODBYE = 4
+    HELLO = 5
     
     @staticmethod
     def str_from_type(msg_type):
@@ -21,11 +22,24 @@ class MessageType:
             MessageType.PING_REQ: "PING_REQ",
             MessageType.PING_RSP: "PING_RSP",
             MessageType.TEXT: "TEXT",
-            MessageType.GOODBYE: "GOODBYE"
+            MessageType.GOODBYE: "GOODBYE",
+            MessageType.HELLO: "HELLO",
         }.get(msg_type, "NONE")
         
         return str_val
     
+    @staticmethod
+    def msg_from_type(msg_type):
+        new_msg = {
+            MessageType.NONE: None,
+            MessageType.PING_REQ: MessagePingReq(),
+            MessageType.PING_RSP: MessagePingRsp(),
+            MessageType.TEXT: MessageText(),
+            MessageType.GOODBYE: MessageGoodbye(),
+            MessageType.HELLO: MessageHello(),
+        }.get(msg_type, None)
+        
+        return new_msg
     
 class MessageBase(object):
     '''
@@ -65,6 +79,8 @@ class MessageBase(object):
             self.proto = Text()
         elif this_type is MessageGoodbye:
             self.proto = Goodbye()
+        elif this_type is MessageHello:
+            self.proto = Hello()
         else:
             raise Exception("Unknown type for factory.")
         
@@ -140,3 +156,17 @@ class MessageGoodbye(MessageBase):
     
     def get_reason_str(self):
         return self.proto.reason_str
+    
+class MessageHello(MessageBase):
+    '''
+    classdocs
+    '''
+    msg_type = MessageType.HELLO
+    
+    def assemble(self, params):
+        self.proto = Hello()
+        self.proto.version = params.get('version')
+        super(MessageHello, self).assemble(params)
+        
+    def get_version(self):
+        return self.proto.version

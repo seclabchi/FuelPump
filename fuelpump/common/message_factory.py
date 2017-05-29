@@ -47,4 +47,8 @@ class MessageFactory(object):
         msg.assemble({'seq_num': cls.get_seq_num(), 'reason': reason, 'reason_str': reason_str})
         return msg
         
-    
+    @classmethod
+    def get_hello(cls, version):
+        msg = MessageHello()
+        msg.assemble({'seq_num': cls.get_seq_num(), 'version': version})
+        return msg

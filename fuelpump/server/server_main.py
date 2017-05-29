@@ -8,7 +8,7 @@ import signal
 import sys
 import socket
 
-from fuelpump.server.client_connection_registry import *
+from fuelpump.server.client_controller_registry import *
 from fuelpump.server.client_connection import *
 from fuelpump.common.message_factory import MessageFactory
 from fuelpump.common.messages_pb2 import *
@@ -17,15 +17,13 @@ from fuelpump.common.message import MessageGoodbye
 IP_ADDR = "0.0.0.0"
 IP_PORT = 2330
 MAX_CONNECTION_QUEUE = 10
+SERVER_VERSION = 0x01000000
 
-client_registry = ClientConnectionRegistry()
+controller_registry = ClientControllerRegistry()
 
 def signal_handler(signal, frame):
-        print('SIGINT received.  Goodbye.')
-        for client in client_registry.get_clients():
-            msg_goodbye = MessageFactory.get_goodbye(Goodbye.SERVER_SHUTDOWN, "Server is exiting on signal.")
-            client.send_msg(msg_goodbye)
-            client.close()
+        print('SIGINT received.  Telling controller to disconnect clients gracefully.')
+        controller_registry.shutdown_gracefully()
         sys.exit(0)
 
 if __name__ == '__main__':
@@ -36,8 +34,10 @@ if __name__ == '__main__':
     listener_sock.bind((IP_ADDR, IP_PORT))
     listener_sock.listen(MAX_CONNECTION_QUEUE)
     
+    print "Server running...waiting for connections..."
+    
     while(True):
         (client_sock, client_addr) = listener_sock.accept()
-        print "New connection from " + repr(client_addr)
-        client_registry.add(ClientConnection(client_registry, client_sock, client_addr))
+        print "New connection from " + repr(client_sock.getpeername())
+        controller_registry.add(client_sock, client_addr)
         

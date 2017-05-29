@@ -32,16 +32,25 @@ class MessageFactoryTests(unittest.TestCase):
         print str(msg.proto)
         
     def testGetGoodbye(self):
-        reason = Goodbye.SERVER_SHUTDOWN
+        reason = Goodbye.SERVER_SHUTDOWN_NORMAL
         reason_str = "Unit test server is shutting down."
         
         msg = MessageFactory.get_goodbye(reason, reason_str)
         
         self.assertEqual(type(msg).__name__, 'MessageGoodbye')
-        self.assertEqual(msg.get_reason(), Goodbye.SERVER_SHUTDOWN)
+        self.assertEqual(msg.get_reason(), Goodbye.SERVER_SHUTDOWN_NORMAL)
         self.assertEqual(msg.get_reason_str(), reason_str)
         
+        print str(msg.proto)
         
+    def testGetHello(self):
+        version = 12345678
+        msg = MessageFactory.get_hello(version)
+        
+        self.assertEqual(type(msg).__name__, 'MessageHello')
+        self.assertEqual(msg.get_version(), version)
+        
+        print str(msg.proto)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

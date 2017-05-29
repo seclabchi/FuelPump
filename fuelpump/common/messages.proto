@@ -30,8 +30,15 @@ message Goodbye
     enum Reason 
     {
         UNKNOWN = 0;
-        SERVER_SHUTDOWN = 1;
+        SERVER_SHUTDOWN_NORMAL = 1;
+        CLIENT_SHUTDOWN_NORMAL = 2;
     }
     Reason reason = 2;
     string reason_str = 3;
+}
+
+message Hello
+{
+    Base base = 1;
+    uint32 version = 2;
 }

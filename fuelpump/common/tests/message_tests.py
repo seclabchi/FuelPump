@@ -106,7 +106,7 @@ class MessageTests(unittest.TestCase):
         msg = MessageGoodbye()
         reason_str = "Unit test shutdown"
         msg_seq_num = 23
-        msg.assemble({'seq_num':msg_seq_num, 'reason':Goodbye.SERVER_SHUTDOWN, 'reason_str':reason_str})
+        msg.assemble({'seq_num':msg_seq_num, 'reason':Goodbye.SERVER_SHUTDOWN_NORMAL, 'reason_str':reason_str})
         msg_bytes = msg.get_bytes()
         print binascii.hexlify(msg_bytes)
         
@@ -120,6 +120,24 @@ class MessageTests(unittest.TestCase):
         self.assertEqual(msg.get_reason_str(), msg_reason_str_check)
         
         print "Goodbye round trip with reason_str " + msg2.get_reason_str() + " and reason code " + repr(msg2.get_reason())
+        print str(msg2.proto)
+        
+    def testHelloRoundTrip(self):
+        msg = MessageHello()
+        msg_seq_num = 23422342
+        version = 10203040
+        msg.assemble({'seq_num':msg_seq_num, 'version':version})
+        msg_bytes = msg.get_bytes()
+        print binascii.hexlify(msg_bytes)
+        
+        msg2 = MessageHello()
+        msg2.create_from_bytes(msg_bytes)
+        
+        msg_version_check = msg2.get_version()
+        
+        self.assertEqual(msg.get_version(), msg_version_check)
+        
+        print "Hello round trip with version " + str(msg_version_check) 
         print str(msg2.proto)
     
 
