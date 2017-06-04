@@ -57,6 +57,7 @@ class MessageBase(object):
         
     def assemble(self, params):
         self.proto.base.seq_num = params.get('seq_num')
+        self.proto.base.dest = params.get('dest')
         self.is_completely_assembled = True
 
     def get_bytes(self):
@@ -97,6 +98,9 @@ class MessageBase(object):
 
     def get_msg_type(self):
         return self.get_msg_type()
+    
+    def get_dest(self):
+        return self.proto.base.dest
 
 
 class MessagePingReq(MessageBase):

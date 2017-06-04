@@ -5,6 +5,7 @@ package messages;
 message Base
 {
     uint32 seq_num = 1;
+    string dest = 2;
 }
 
 message PingReq
@@ -41,4 +42,5 @@ message Hello
 {
     Base base = 1;
     uint32 version = 2;
+    string username = 3;
 }

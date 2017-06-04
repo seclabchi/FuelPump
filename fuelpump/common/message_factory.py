@@ -24,31 +24,31 @@ class MessageFactory(object):
         return ret_seq_num
     
     @classmethod    
-    def get_ping_req(cls):
+    def get_ping_req(cls, dest):
         msg = MessagePingReq()
-        msg.assemble({'seq_num': cls.get_seq_num()})
+        msg.assemble({'seq_num': cls.get_seq_num(), 'dest':dest})
         return msg
     
     @classmethod   
-    def get_ping_rsp(cls, req_seq_num):
+    def get_ping_rsp(cls, dest, req_seq_num):
         msg = MessagePingRsp()
-        msg.assemble({'seq_num': cls.get_seq_num(), 'req_seq_num': req_seq_num})
+        msg.assemble({'seq_num': cls.get_seq_num(), 'dest':dest, 'req_seq_num': req_seq_num})
         return msg
     
     @classmethod   
-    def get_text(cls, msg_txt):
+    def get_text(cls, dest, msg_txt):
         msg = MessageText()
-        msg.assemble({'seq_num': cls.get_seq_num(), 'msg_txt': msg_txt})
+        msg.assemble({'seq_num': cls.get_seq_num(), 'dest':dest, 'msg_txt': msg_txt})
         return msg
     
     @classmethod
-    def get_goodbye(cls, reason, reason_str):
+    def get_goodbye(cls, dest, reason, reason_str):
         msg = MessageGoodbye()
-        msg.assemble({'seq_num': cls.get_seq_num(), 'reason': reason, 'reason_str': reason_str})
+        msg.assemble({'seq_num': cls.get_seq_num(), 'dest':dest, 'reason': reason, 'reason_str': reason_str})
         return msg
         
     @classmethod
-    def get_hello(cls, version):
+    def get_hello(cls, dest, version):
         msg = MessageHello()
-        msg.assemble({'seq_num': cls.get_seq_num(), 'version': version})
+        msg.assemble({'seq_num': cls.get_seq_num(), 'dest':dest, 'version': version})
         return msg

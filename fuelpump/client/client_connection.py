@@ -6,14 +6,16 @@ Created on May 28, 2017
 import time
 import socket
 import binascii
+import logging
 
 from fuelpump.common.message_factory import *
 from fuelpump.common.message import *
 from fuelpump.common.message_datalink import *
+from fuelpump.client.client_controller import *
 
 CLIENT_VERSION = 0x01000000
 
-class ClientMain(object):
+class ClientConnection(object):
     '''
     classdocs
     '''
@@ -33,21 +35,21 @@ class ClientMain(object):
         
     def connect(self, host, port):
         try:
-            print "Connecting to " + host + ":" + str(port) + "..."
+            logging.info("Connecting to " + host + ":" + str(port) + "...")
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((host, port))
-            print "Connected."
+            logging.info("Connected.")
             self.send_hello()
         except Exception as e:
-            print "Exception occurred attempting to connect to " + host + ":" + str(port) + " - " + repr(e)
+            logging.exception("Exception occurred attempting to connect to " + host + ":" + str(port) + " - " + repr(e))
     
     def disconnect(self):
         if None != self.sock:
-            print "Disconnecting..."
+            logging.info("Disconnecting...")
             self.send_goodbye_normal()
             self.sock.shutdown(socket.SHUT_RDWR)
             self.sock.close()
-            print "Disconnected."
+            logging.info("Disconnected.")
             
     def send_hello(self):
         msg_hello = MessageFactory.get_hello(CLIENT_VERSION)
@@ -63,7 +65,7 @@ class ClientMain(object):
         
     
 if __name__ == '__main__':
-    client = ClientMain()
+    client = ClientConnection()
     result = client.connect("127.0.0.1", 2330)
     
     while True:

@@ -24,17 +24,19 @@ class MessageDatalinkTests(unittest.TestCase):
         self.assertEqual(decoded_message[4:], self.message_reference)
 
     def test_encode(self):
-        msg = MessageFactory.get_ping_req()
+        dest = 'qwerty9876543210'
+        msg = MessageFactory.get_ping_req(dest)
         self.print_enc(msg)
         
-        msg = MessageFactory.get_ping_rsp(23)
+        msg = MessageFactory.get_ping_rsp(dest, 23)
         self.print_enc(msg)
         
-        msg = MessageFactory.get_text("Hello from the \x10 MessageDatalinkTests test_encode \x10\x10 test!!!\x10\x10")
+        msg = MessageFactory.get_text(dest, "Hello from the \x10 MessageDatalinkTests test_encode \x10\x10 test!!!\x10\x10")
         self.print_enc(msg)
         
     def test_local_decode_ping_req(self):
-        test_msg_source = MessageFactory.get_ping_req()
+        dest = 'remote'
+        test_msg_source = MessageFactory.get_ping_req(dest)
         self.message_reference = test_msg_source.get_bytes()
         
         enc_msg = MessageDatalink.encode(test_msg_source)
@@ -43,7 +45,8 @@ class MessageDatalinkTests(unittest.TestCase):
         datalink.decode(enc_msg, self.decode_callback)
         
     def test_local_decode_text(self):
-        test_msg_source = MessageFactory.get_text("Hello \x10 \x10 \x02 \x03 from the purposefully \x03 \x02 \x10\x10\x10 weirdly-crafted text message datalink test.")
+        dest = 'foobar'
+        test_msg_source = MessageFactory.get_text(dest, "Hello \x10 \x10 \x02 \x03 from the purposefully \x03 \x02 \x10\x10\x10 weirdly-crafted text message datalink test.")
         self.message_reference = test_msg_source.get_bytes()
         enc_msg = MessageDatalink.encode(test_msg_source)
         
@@ -51,7 +54,8 @@ class MessageDatalinkTests(unittest.TestCase):
         datalink.decode(enc_msg, self.decode_callback)
     
     def test_local_decode_text_in_parts(self):
-        test_msg_source = MessageFactory.get_text("Hello \x10 \x10 \x02 \x03 from the purposefully \x03 \x02 \x10\x10\x10 weirdly-crafted text message datalink test.")
+        dest = 'howdydoody'
+        test_msg_source = MessageFactory.get_text(dest, "Hello \x10 \x10 \x02 \x03 from the purposefully \x03 \x02 \x10\x10\x10 weirdly-crafted text message datalink test.")
         self.message_reference = test_msg_source.get_bytes()
         enc_msg = MessageDatalink.encode(test_msg_source)
         
@@ -62,7 +66,8 @@ class MessageDatalinkTests(unittest.TestCase):
         datalink.decode(enc_msg[20:], self.decode_callback)
         
     def test_local_decode_with_out_of_band(self):
-        test_msg_source = MessageFactory.get_text("Hello \x10 \x10 \x02 \x03 from the purposefully \x03 \x02 \x10\x10\x10 weirdly-crafted text message datalink test.")
+        dest = 'covfefe'
+        test_msg_source = MessageFactory.get_text(dest, "Hello \x10 \x10 \x02 \x03 from the purposefully \x03 \x02 \x10\x10\x10 weirdly-crafted text message datalink test.")
         self.message_reference = test_msg_source.get_bytes()
         enc_msg = MessageDatalink.encode(test_msg_source)
         

@@ -27,9 +27,9 @@ class MessageTests(unittest.TestCase):
         visitor = TestVisitor()
         
         msg_ping = MessagePingReq()
-        msg_ping.assemble({'seq_num': 1})
+        msg_ping.assemble({'seq_num': 1, 'dest':'server'})
         msg_text = MessageText()
-        msg_text.assemble({'seq_num': 2, 'msg_txt': 'Hello, world!'})
+        msg_text.assemble({'seq_num': 2, 'dest':'server', 'msg_txt': 'Hello, world!'})
         
         msgs = [msg_ping, msg_text]
         
@@ -48,13 +48,13 @@ class MessageTests(unittest.TestCase):
             
     def testPingGetBytes(self):
         msg_ping = MessagePingReq()
-        msg_ping.assemble({'seq_num':232323})
+        msg_ping.assemble({'seq_num':232323, 'dest':'server'})
         self.msg_bytes = msg_ping.get_bytes()
         print binascii.hexlify(self.msg_bytes)
         
     def testPingReqCreateFromBytes(self):
         msg_ping = MessagePingReq()
-        msg_ping.assemble({'seq_num':232323})
+        msg_ping.assemble({'seq_num':232323, 'dest':'server'})
         msg_bytes = msg_ping.get_bytes()
         print binascii.hexlify(msg_bytes)
         
@@ -74,7 +74,7 @@ class MessageTests(unittest.TestCase):
     def testPingRspLocalRoundTrip(self):
         msg = MessagePingRsp()
         msg_seq_num = 99887766
-        msg.assemble({'seq_num':msg_seq_num, 'req_seq_num':42})
+        msg.assemble({'seq_num':msg_seq_num, 'dest':'server', 'req_seq_num':42})
         msg_bytes = msg.get_bytes()
         print binascii.hexlify(msg_bytes)
         
@@ -89,7 +89,7 @@ class MessageTests(unittest.TestCase):
         msg = MessageText()
         msg_str = "Hello, Protobufs, and Hello SecretLabComms in Python!!!"
         msg_seq_num = 12345678
-        msg.assemble({'seq_num':msg_seq_num, 'msg_txt':msg_str})
+        msg.assemble({'seq_num':msg_seq_num, 'dest':'server', 'msg_txt':msg_str})
         msg_bytes = msg.get_bytes()
         print binascii.hexlify(msg_bytes)
         
@@ -106,7 +106,7 @@ class MessageTests(unittest.TestCase):
         msg = MessageGoodbye()
         reason_str = "Unit test shutdown"
         msg_seq_num = 23
-        msg.assemble({'seq_num':msg_seq_num, 'reason':Goodbye.SERVER_SHUTDOWN_NORMAL, 'reason_str':reason_str})
+        msg.assemble({'seq_num':msg_seq_num, 'dest':'server', 'reason':Goodbye.SERVER_SHUTDOWN_NORMAL, 'reason_str':reason_str})
         msg_bytes = msg.get_bytes()
         print binascii.hexlify(msg_bytes)
         
@@ -126,7 +126,7 @@ class MessageTests(unittest.TestCase):
         msg = MessageHello()
         msg_seq_num = 23422342
         version = 10203040
-        msg.assemble({'seq_num':msg_seq_num, 'version':version})
+        msg.assemble({'seq_num':msg_seq_num, 'dest':'server', 'version':version})
         msg_bytes = msg.get_bytes()
         print binascii.hexlify(msg_bytes)
         

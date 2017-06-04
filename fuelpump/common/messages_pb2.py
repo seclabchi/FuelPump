@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='messages.proto',
   package='messages',
   syntax='proto3',
-  serialized_pb=_b('\n\x0emessages.proto\x12\x08messages\"\x17\n\x04\x42\x61se\x12\x0f\n\x07seq_num\x18\x01 \x01(\r\"\'\n\x07PingReq\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\"<\n\x07PingRsp\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12\x13\n\x0breq_seq_num\x18\x02 \x01(\r\"5\n\x04Text\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12\x0f\n\x07msg_txt\x18\x02 \x01(\t\"\xb4\x01\n\x07Goodbye\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12(\n\x06reason\x18\x02 \x01(\x0e\x32\x18.messages.Goodbye.Reason\x12\x12\n\nreason_str\x18\x03 \x01(\t\"M\n\x06Reason\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x1a\n\x16SERVER_SHUTDOWN_NORMAL\x10\x01\x12\x1a\n\x16\x43LIENT_SHUTDOWN_NORMAL\x10\x02\"6\n\x05Hello\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12\x0f\n\x07version\x18\x02 \x01(\rb\x06proto3')
+  serialized_pb=_b('\n\x0emessages.proto\x12\x08messages\"%\n\x04\x42\x61se\x12\x0f\n\x07seq_num\x18\x01 \x01(\r\x12\x0c\n\x04\x64\x65st\x18\x02 \x01(\t\"\'\n\x07PingReq\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\"<\n\x07PingRsp\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12\x13\n\x0breq_seq_num\x18\x02 \x01(\r\"5\n\x04Text\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12\x0f\n\x07msg_txt\x18\x02 \x01(\t\"\xb4\x01\n\x07Goodbye\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12(\n\x06reason\x18\x02 \x01(\x0e\x32\x18.messages.Goodbye.Reason\x12\x12\n\nreason_str\x18\x03 \x01(\t\"M\n\x06Reason\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x1a\n\x16SERVER_SHUTDOWN_NORMAL\x10\x01\x12\x1a\n\x16\x43LIENT_SHUTDOWN_NORMAL\x10\x02\"H\n\x05Hello\x12\x1c\n\x04\x62\x61se\x18\x01 \x01(\x0b\x32\x0e.messages.Base\x12\x0f\n\x07version\x18\x02 \x01(\r\x12\x10\n\x08username\x18\x03 \x01(\tb\x06proto3')
 )
 
 
@@ -45,8 +45,8 @@ _GOODBYE_REASON = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=315,
-  serialized_end=392,
+  serialized_start=329,
+  serialized_end=406,
 )
 _sym_db.RegisterEnumDescriptor(_GOODBYE_REASON)
 
@@ -65,6 +65,13 @@ _BASE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='dest', full_name='messages.Base.dest', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -78,7 +85,7 @@ _BASE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=28,
-  serialized_end=51,
+  serialized_end=65,
 )
 
 
@@ -108,8 +115,8 @@ _PINGREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=53,
-  serialized_end=92,
+  serialized_start=67,
+  serialized_end=106,
 )
 
 
@@ -146,8 +153,8 @@ _PINGRSP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=94,
-  serialized_end=154,
+  serialized_start=108,
+  serialized_end=168,
 )
 
 
@@ -184,8 +191,8 @@ _TEXT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=156,
-  serialized_end=209,
+  serialized_start=170,
+  serialized_end=223,
 )
 
 
@@ -230,8 +237,8 @@ _GOODBYE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=212,
-  serialized_end=392,
+  serialized_start=226,
+  serialized_end=406,
 )
 
 
@@ -256,6 +263,13 @@ _HELLO = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='username', full_name='messages.Hello.username', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -268,8 +282,8 @@ _HELLO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=394,
-  serialized_end=448,
+  serialized_start=408,
+  serialized_end=480,
 )
 
 _PINGREQ.fields_by_name['base'].message_type = _BASE

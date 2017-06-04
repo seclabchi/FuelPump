@@ -59,7 +59,7 @@ class MessageDatalink(object):
                     self.msg_in_progress = True
                     self.rx_buf = bytearray()
                 else:
-                    print "Received character 0x" + binascii.hexlify(byte) + " not in msg frame."
+                    print "Received character " + str(hex(byte)) + " not in msg frame."
             else:
                 #msg in progress
                 if BYTE_DLE == byte:
