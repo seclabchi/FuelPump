@@ -53,12 +53,13 @@ class ClientUiMain():
         
     def window_closing(self):
         logging.debug("Caught Tkinter window closing event.")
+        self.txq.put('UI_QUIT')
         self.shutdown = True
         
     def process_rxq(self):
         try:
             rx_msg = self.rxq.get(False)
-            logging.debug("GOT MSG " + repr(rx_msg))
+            logging.debug("UI got msg " + repr(rx_msg))
             self.txq.put(rx_msg, False)
         except Exception as e:
             pass

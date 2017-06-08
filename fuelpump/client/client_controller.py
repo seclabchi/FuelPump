@@ -86,24 +86,18 @@ class ControllerThread(threading.Thread):
         self.shutdown = False
         self.ui_txq = txq
         self.ui_rxq = rxq
+        self.ui_done = True
         super(ControllerThread, self).__init__(None, self.thread_main, 'ControllerThread')
         
     def thread_main(self):
-        logging.debug("Controller thread started.")
-        ui_done = False
+        rx_mon = UiQMonitor(self.ui_rxq, self.ui_msg_received)
+        rx_mon.start()
         
-        while False == ui_done:
+        logging.debug("Controller thread started.")
+        
+        while False == self.ui_done:
             self.ui_txq.put("Hello, UI!", False)
-            
-            try:
-                rx_msg = self.ui_rxq.get(False)
-                logging.debug("Controller got msg " + repr(rx_msg))
-                if 'ui_done' == rx_msg:
-                    ui_done = True
-            except Exception as e:
-                pass
-            
-            time.sleep(1)
+            #add event waiter for tx here
             
         logging.debug('Controller thread done.')
     
@@ -112,12 +106,41 @@ class ControllerThread(threading.Thread):
         self.shutdown = True
         self.join()
         logging.debug("Controller thread joined.")
+        
+        
+class UiQMonitor(threading.Thread):
+    '''
+    classdocs
+    '''
+    
+    def __init__(self, rxq, rx_msg_callback):
+        self.rxq = rxq
+        self.callback = rx_msg_callback
+        super(UiQMonitor, self).__init__(None, self.run_func, "UiQMonitorThread")
+        
+    def shutdown(self):
+        logging.debug("Shutdown received.")
+        self.rxq.put(False, "SELF_QUIT")
+        self.join()
+        logging.debug("Self joined.")
+        
+    def run_func(self):
+        logging.debug('Top of thread loop.')
+        while True:
+            rx_msg = self.rxq.get(True)
+            logging.debug("Got msg " + repr(rx_msg))
+            if ('UI_QUIT' == rx_msg) Or ('SELF_QUIT' == rx_msg):
+                break
+            
+        #figure out stop logic
+        logging.debug('Exiting thread loop.')
+    
 
 if __name__ == '__main__':
     logging.basicConfig(filename='/tmp/slcomm_client.log', level=logging.DEBUG)
     logging_stream_handler = logging.StreamHandler()
     logging.Formatter.converter = time.gmtime
-    log_formatter = logging.Formatter("%(asctime)s [%(filename)-20.20s:%(lineno)-4.4s - %(funcName)-25.25s] [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+    log_formatter = logging.Formatter("%(asctime)s [%(filename)-20.20s:%(lineno)-4.4s - %(funcName)-25.25s] [%(threadName)-18.18s] [%(levelname)-5.5s]  %(message)s")
     logging_stream_handler.setFormatter(log_formatter)
     logging.getLogger().addHandler(logging_stream_handler)
     
