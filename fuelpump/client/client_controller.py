@@ -129,7 +129,7 @@ class UiQMonitor(threading.Thread):
         while True:
             rx_msg = self.rxq.get(True)
             logging.debug("Got msg " + repr(rx_msg))
-            if ('UI_QUIT' == rx_msg) Or ('SELF_QUIT' == rx_msg):
+            if ('UI_QUIT' == rx_msg) or ('SELF_QUIT' == rx_msg):
                 break
             
         #figure out stop logic
