@@ -33,12 +33,13 @@ class Gps(object):
         
         self.device.port = dev_handle
         
-        logging.info("Opening GPS device at " + self.device.port + "...")
+        logging.info("Starting GPS device at " + self.device.port + "...")
         self.device.open()
         self.connected = True
-        logging.info("GPS open.  Starting reader thread...")
+        logging.info("GPS at " + self.device.port + " started.")
         start_lock = threading.Lock()
         start_lock.acquire(True)
+        logging.debug("Starting reader thread...")
         self.reader_thread = GpsReader(self.device, self.sentenceQ, start_lock)
         self.reader_thread.start()
         start_lock.acquire(True)
@@ -46,8 +47,10 @@ class Gps(object):
         
     def stop(self):
         if True == self.connected:
+            logging.info("Stopping GPS device at " + self.device.port + "...")
             self.reader_thread.stop()
             self.device.close()
+            logging.info("GPS at " + self.device.port + " stopped.")
             self.connected = False
             
     def get_sentence(self):
@@ -104,7 +107,7 @@ class GpsReader(threading.Thread):
                             logging.warn("GPS RX Sentence Q full...clearing.")
                             with self.sentenceQ.mutex:
                                 self.sentenceQ.queue.clear()
-                        self.sentenceQ.put_nowait(self.rx_buf)
+                        self.sentenceQ.put_nowait(str(self.rx_buf))
                     self.rx_buf = bytearray()
                 elif '\r' == char:
                     pass #don't care, ignore it
