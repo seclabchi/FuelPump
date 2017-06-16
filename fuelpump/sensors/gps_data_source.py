@@ -21,9 +21,13 @@ class GpsDataSource(object):
         self.reader = GpsSentenceReader(self.gps, self)
         self.svs = []
         self.gprmc = None
+        self.gpgsa = None
+        self.gpgga = None
         
         self.lock_gpgsv = threading.Lock()
         self.lock_gprmc = threading.Lock()
+        self.lock_gpgsa = threading.Lock()
+        self.lock_gpgga = threading.Lock()
         
     def start(self):
         self.gps.start(self.gps_dev_handle)
@@ -33,20 +37,36 @@ class GpsDataSource(object):
         self.reader.stop()
         self.gps.stop()
         
-    def set_GPRMC_data(self, date, nav_rcvr_warning, time, lat, lat_ns, lon, lon_ew, spd_kts, crs_true, mag_var, mag_var_ew):
+    def set_GPRMC_data(self, time, nav_rcvr_warning, lat, lat_ns, lon, lon_ew, spd_kts, crs_true, date, mag_var, mag_var_ew):
         self.lock_gprmc.acquire()
-        self.gprmc = RMCData((date, nav_rcvr_warning, time, lat, lat_ns, lon, lon_ew, spd_kts, crs_true, mag_var, mag_var_ew))
+        self.gprmc = GPRMCData()
+        self.gprmc.init_from_string_params(time, nav_rcvr_warning, lat, lat_ns, lon, lon_ew, spd_kts, crs_true, date, mag_var, mag_var_ew)
         self.lock_gprmc.release()
         
     def get_GPRMC_data(self):
+        rmc = GPRMCData()
         self.lock_gprmc.acquire()
-        rmc = None
+        gprmc = GPRMCData()
         if None != self.gprmc:
-            rmc = RMCData(self.gprmc.get_tuple())
+            gprmc.init_by_copy(self.gprmc)
         self.lock_gprmc.release()
-        return rmc
+        return gprmc
         
-    def set_GPGSA_data(self, mode, fix_svs, pdop, hdop, vdop):
+    def set_GPGSA_data(self, mode_op, mode_fix, fix_svs, pdop, hdop, vdop):
+        self.lock_gpgsa.acquire()
+        self.gpgsa = GPGSAData()
+        self.gpgsa.init_from_string_params(mode_op, mode_fix, fix_svs, pdop, hdop, vdop)
+        self.lock_gpgsa.release()
+    
+    def get_GPGSA_data(self):
+        gsa = GPGSAData()
+        self.lock_gpgsa.acquire()
+        if None != self.gpgsa:
+            gsa.init_by_copy(self.gpgsa)
+        self.lock_gpgsa.release()
+        return gsa
+    
+    def set_GPGGA_data(self):
         pass
     
     def set_GPGSV_data(self, svs):
@@ -106,13 +126,19 @@ class GpsSentenceReader(threading.Thread):
                         
             elif 'GPRMC' == parts[0]:
                 self.controller.set_GPRMC_data(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8], parts[9], parts[10], parts[11])
-                
+            elif 'GPGSA' == parts[0]:
+                self.controller.set_GPGSA_data(parts[1], parts[2], (parts[3], parts[4], parts[5], parts[6], parts[7], parts[8], parts[9], parts[10], parts[11], parts[12], parts[13], parts[14]), parts[15], parts[16], parts[17])
+            elif 'GPGGA' == parts[0]:
+                self.controller.set_GPGGA_data()
+            else:
+                logging.warn("Received unknown NMEA sentence type " + parts[0])
+            
                 
                 
             
             
 if __name__ == '__main__':
-    logging.getLogger().setLevel(logging.INFO)
+    logging.getLogger().setLevel(logging.DEBUG)
     logging_stream_handler = logging.StreamHandler()
     logging.Formatter.converter = time.gmtime
     log_formatter = logging.Formatter("%(asctime)s [%(filename)-20.20s:%(lineno)-4.4s - %(funcName)-25.25s] [%(threadName)-18.18s] [%(levelname)-5.5s]  %(message)s")
@@ -126,10 +152,12 @@ if __name__ == '__main__':
     while run_count < 10:
         svs = data_source.get_GPGSV_data()
         for sv in svs:
-            print str(sv) + " | ",
+            print repr(sv.get_tuple()) + " | ",
         print ''
         rmc = data_source.get_GPRMC_data()
-        print str(rmc)
+        print repr(rmc.get_tuple())
+        gsa = data_source.get_GPGSA_data()
+        print repr(gsa.get_tuple())
         run_count = run_count + 1
         time.sleep(2)
     data_source.stop()
